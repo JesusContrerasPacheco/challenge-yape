@@ -1,78 +1,91 @@
-# Yape Code Challenge :rocket:
+## Guía de inicialización
 
-- [Problem](#problem)
-- [Tech Stack](#tech_stack)
-- [Send us your challenge](#send_us_your_challenge)
-
-# Problem
-
-Every time a financial transaction is created it must be validated by our anti-fraud microservice and then the same service sends a message back to update the transaction status.
-For now, we have only three transaction statuses:
-
-<ol>
-  <li>pending</li>
-  <li>approved</li>
-  <li>rejected</li>  
-</ol>
-
-Every transaction with a value greater than 1000 should be rejected.
-
-```mermaid
-  flowchart LR
-    Transaction -- Save Transaction with pending Status --> transactionDatabase[(Database)]
-    Transaction --Send transaction Created event--> Anti-Fraud
-    Anti-Fraud -- Send transaction Status Approved event--> Transaction
-    Anti-Fraud -- Send transaction Status Rejected event--> Transaction
-    Transaction -- Update transaction Status event--> transactionDatabase[(Database)]
+# 1. Iniciar contenedores
+* Acceder a la carpeta "container"
+* Ejecutar comando 
+```bash
+$ docker-compose up
 ```
+* Asegurarse todo esté activo
+<p align="center">
+  <img src="https://file.pinfile.net/sx8qtsvgn/docker-compose-up.png" width="200" alt="" />
+</p>
 
-# Tech Stack
 
-<ol>
-  <li>Node. You can use any framework you want (i.e. Nestjs with an ORM like TypeOrm or Prisma) </li>
-  <li>Any database</li>
-  <li>Kafka</li>    
-</ol>
-
-We do provide a `Dockerfile` to help you get started with a dev environment.
-
-You must have two resources:
-
-1. Resource to create a transaction that must containt:
-
-```json
-{
-  "accountExternalIdDebit": "Guid",
-  "accountExternalIdCredit": "Guid",
-  "tranferTypeId": 1,
-  "value": 120
-}
+# 2. Iniciar módulo antifraude
+* Acceder a la carpeta "anti-fraud"
+* Ejecutar comando de instalación
+```bash
+$ npm install
 ```
-
-2. Resource to retrieve a transaction
-
-```json
-{
-  "transactionExternalId": "Guid",
-  "transactionType": {
-    "name": ""
-  },
-  "transactionStatus": {
-    "name": ""
-  },
-  "value": 120,
-  "createdAt": "Date"
-}
+* Ejecutar comando de inicialización
+```bash
+$ npm run start:dev
 ```
+* Asegurarse todo esté activo
+<p align="center">
+  <img src="https://file.pinfile.net/daunljmoz/antifraude-up.png" width="200" alt="" />
+</p>
 
-## Optional
 
-You can use any approach to store transaction data but you should consider that we may deal with high volume scenarios where we have a huge amount of writes and reads for the same data at the same time. How would you tackle this requirement?
+# 3. Iniciar módulo transacción
+* Acceder a la carpeta "transaction"
+* Ejecutar comando de instalación
+```bash
+$ npm install
+```
+* Ejecutar comando de inicialización
+```bash
+$ npm run start:dev
+```
+* Asegurarse todo esté activo
+<p align="center">
+  <img src="https://file.pinfile.net/etkofzkom/transaction-up.png" width="200" alt="" />
+</p>
 
-You can use Graphql;
 
-# Send us your challenge
+# 4. Iniciar api/graphql
+* Acceder a la carpeta "api"
+* Ejecutar comando de instalación
+```bash
+$ npm install
+```
+* Ejecutar comando de inicialización
+```bash
+$ npm run start:dev
+```
+* Asegurarse todo esté activo
+<p align="center">
+  <img src="https://file.pinfile.net/yfok8yhoh/api-up.png" width="200" alt="" />
+</p>
 
-When you finish your challenge, after forking a repository, you can open a pull request to our repository. There are no limitations to the implementation, you can follow the programming paradigm, modularization, and style that you feel is the most appropriate solution.
+* Utilizar API en http://localhost:3000/graphql
+* Las estructuras para creación y consulta de transacción están en ./graphql/*.txt
 
-If you have any questions, please let us know.
+
+## Flujo de transacción
+
+# Crear transacción. Registra con estado 'pending'
+<p align="center">
+  <img src="https://file.pinfile.net/1pbccxx/create-transaction.png" width="200" alt="" />
+</p>
+
+# Mensaje recibido por módulo antifraude - transacción pendiente. Solo evalúa regla de monto
+<p align="center">
+  <img src="https://file.pinfile.net/bubug3to6/message-antifraud.png" width="200" alt="" />
+</p>
+
+# Mensaje recibido por módulo transacción - transacción 'approved' o 'rejected'. Actualiza estado final de transacción
+<p align="center">
+  <img src="https://file.pinfile.net/judo9yooh/message-transaction.png" width="200" alt="" />
+</p>
+
+# Consulta a consola database
+<p align="center">
+  <img src="https://file.pinfile.net/3lp4jx6kb/console-db.png" width="200" alt="" />
+</p>
+
+# Consulta en entorno graphql
+<p align="center">
+  <img src="https://file.pinfile.net/ikzzmgmy4/get-transaction.png" width="200" alt="" />
+</p>

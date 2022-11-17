@@ -1,0 +1,9 @@
+mutation {
+    createTransaction(createTransactionData: { accountExternalIdDebit: "abc", accountExternalIdCredit: "ghj", tranferTypeId: 1, value: 230 }) {
+      transactionExternalId,
+      transactionType,
+      transactionStatus,
+      value,
+      createdAt
+    }
+}

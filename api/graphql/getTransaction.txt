@@ -1,0 +1,9 @@
+query {
+    transaction(transactionExternalId: "abc") {
+      transactionExternalId,
+      transactionType,
+      transactionStatus,
+      value,
+      createdAt
+    }
+}
